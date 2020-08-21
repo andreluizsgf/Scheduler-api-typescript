@@ -1,0 +1,35 @@
+{
+  "name": "seans-typescript-nodejs-crud-rest-api-boilerplate",
+  "version": "1.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "tsc && node dist/server.js",
+    "build": "tsc",
+    "dev": "concurrently --kill-others \"tsc -w\" \"nodemon dist/server.js\""
+  },
+  "keywords": [
+    "typescript",
+    "nodejs",
+    "crud",
+    "rest",
+    "swagger"
+  ],
+  "author": "Sean Bradley",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.6",
+    "@types/node": "^13.13.12",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "moment": "^2.27.0",
+    "swagger-ui-express": "^4.1.4",
+    "typescript": "3.3.3333",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^2.2.0",
+    "nodemon": "^2.0.4"
+  }
+}
