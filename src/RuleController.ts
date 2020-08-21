@@ -1,14 +1,11 @@
 import Rule from "./models/Rule"
 
-class RuleController {
+export default class RuleController {
     
     constructor(){
-        
         const index = () => {
             console.log('oi')
         }
     }
     
 }
-
-export default RuleController

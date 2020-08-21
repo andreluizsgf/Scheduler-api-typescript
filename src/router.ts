@@ -1,14 +1,11 @@
 import * as express from 'express'
-import Cat from './models/Cat'
 import cors from 'cors'
-import RuleController from './RuleController'
 import Rule from './models/Rule';
-import { newId, writeJson, mkDir, checkDay } from './helper'
+import Interval from './models/Interval'
+import { writeJson, readJson, checkConflictsByDate, checkConflictsByDay } from './helper'
 import path from 'path'
-import { write, writeFileSync } from 'fs';
 import moment from 'moment'
-
-const days = ['Sunday', 'Monday','Tuesday' , 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+import { DATABASE_JSON } from './paths.consts'
 
 class Router {
 
@@ -35,31 +32,40 @@ class Router {
         //create new cat
         router.post('/rules', cors(), async (req: express.Request, res: express.Response) => {
             try {
-                let rule: Rule = {} as Rule;
-                Object.assign(rule, req.body)
-                const id = 1;
-                
-                await mkDir(path.join(__dirname, 'database'));
-
-                const freq = 0
-                if(freq === 0){
-                    const day = moment('20-08-2020', 'DD-MM-YYYY').format('d')
-                    //checkDay(day)
-                }
-
-                rules[id] = rule;
-                //const serializedData = JSON.stringify(rules, null, 2);
-                //writeFileSync(serializedData, path.join(__dirname, 'database', 'rules.json' ))
-                writeJson(rules, path.join(__dirname, 'database', 'rules.json'))
-
-                res.json({
-                    uuid: id
-                })
+                readJson(path.join(DATABASE_JSON))
+                    .then((rulesJson) => {
+                        const date: string = req.body.date
+                        const intervals: Interval[] = req.body.intervals
+        
+                        if(date){
+                            const day = +moment(date, 'DD-MM-YYYY').format('d')
+                            intervals.forEach(interval => {
+                                const rule: Rule = {date: date, day: day, interval: interval}
+                                if(checkConflictsByDate(rule, rulesJson) && checkConflictsByDay(rule, rulesJson))
+                                    rulesJson.push(rule)
+                            });
+                        } else {
+                            const days: number[] = req.body.days || [0, 1, 2, 3, 4, 5, 6, 7]
+                            days.forEach(day => {
+                                intervals.forEach(interval => {
+                                    const rule: Rule = {date: req.body.date, day: day, interval: interval}
+                                    if(checkConflictsByDay(rule, rulesJson))
+                                        rulesJson.push(rule)
+                                });
+                            });
+                        }
+                        
+                        writeJson(rulesJson, DATABASE_JSON)
+        
+                        res.json({
+                            uuid: 0
+                        })
+                    })
             } catch (e) {
                 res.status(400).send(JSON.stringify({ "error": e }));
             }
         })
-
+        /*
         //get cat by id
         router.get('/rules/:id', cors(), (req: express.Request, res: express.Response) => {
             if (!!rules[req.params.id]) {
@@ -99,7 +105,7 @@ class Router {
             } else {
                 res.status(404).send(JSON.stringify({ "error": "no such cat" }));
             }
-        });
+        });*/
 
         router.options('*', cors());
 

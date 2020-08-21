@@ -5,6 +5,9 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "outDir": "dist",
+    "types": [
+      "node"
+    ]
     //"sourceMap": true
   },
   "files": [
