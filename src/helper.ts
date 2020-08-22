@@ -1,6 +1,10 @@
 import fs from 'fs'
 import Rule from './models/Rule';
 
+export const getNewId = (rules: Rule[] ) => {
+    return rules.length + 1
+}
+
 export const mkDir = (dirPath: string) => {
     if (!fs.existsSync(dirPath)) 
         return fs.promises.mkdir(dirPath);
@@ -14,17 +18,17 @@ export const writeJson = <T>(data: T, filepath: any) => {
     return fs.promises.writeFile(filepath, serializedData);
 };
 
-export const readJson = <T>(filepath: string): any => {
-    return new Promise<T>((resolve, reject) => {
+export const readJson = (filepath: string): any => {
+    return new Promise ((resolve, reject) => {
         fs.readFile(filepath, (err, data) => {
             if (err) reject(err);
-            const jsonData: T =  parseJson(data.toString())
+            const jsonData: any =  parseJson(data.toString())
             resolve(jsonData);
         });
     });
 }
 
-const parseJson = (data: string) => {
+const parseJson = (data: string): Rule[] | [] => {
     try {
         return JSON.parse(data)
     } catch (e) {
@@ -37,8 +41,9 @@ export const checkConflictsByDate = (newRule: Rule, rules: any) => {
     
     if(intervals.length)
         return intervals.every(interval => {
-            return ( ((newRule.interval.start <= interval.start && newRule.interval.end <= interval.start) || (newRule.interval.start >= interval.end && newRule.interval.end >= interval.end)) && newRule.interval.start != newRule.interval.end)
+            return (((newRule.interval.start <= interval.start && newRule.interval.end <= interval.start) || (newRule.interval.start >= interval.end && newRule.interval.end >= interval.end)) && newRule.interval.start != newRule.interval.end)
         })
+        
     else return true;
 }
 
@@ -57,14 +62,14 @@ const getIntervalsByDay = (day: number, rules: Rule[]) => {
     return rules.map(rule => {
         if(rule.day === day)
             return rule.interval;
-    }).filter(interval => { return interval !== undefined})
+    }).filter(interval => { return !!interval})
 }
 
 const getIntervalsByDate = (date: string, rules: Rule[]) => {
     return rules.map(rule => {
         if(rule.date === date)
             return rule.interval;
-    }).filter(interval => { return interval !== undefined})
+    }).filter(interval => { return !!interval})
 }
 
 const compare = ( a, b ) =>  { //ordenar os intervalos dps.
