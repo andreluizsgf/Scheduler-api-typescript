@@ -1,7 +1,7 @@
 import * as express from 'express'
 import Rule from '../models/Rule.model';
 import Interval from '../models/Interval.model'
-import { writeJson, readJson, checkConflictsByDate, checkConflictsByDay, getNewId, getAvailableHours } from '../helper'
+import { writeJson, readJson, checkConflictsByDate, checkConflictsByDay, getNewId, getAvailableHours, generateDatesWithinRange } from '../helper'
 import moment from 'moment'
 import { DATABASE_JSON } from '../paths.consts'
 
@@ -35,7 +35,7 @@ export const store = (req: express.Request, res: express.Response) => {
                             rulesJson.set(id, rule)
                     });
                 } else {
-                    const days: number[] = req.body.days || [0, 1, 2, 3, 4, 5, 6, 7]
+                    const days: number[] = req.body.days || [0, 1, 2, 3, 4, 5, 6]
                     days.forEach(day => {
                         intervals.forEach(interval => {
                             const id = getNewId(rulesJson)
@@ -60,11 +60,12 @@ export const store = (req: express.Request, res: express.Response) => {
 
 export const availableHours = (req: express.Request, res: express.Response) => {
     try {
-        const dates = req.body.days;
+        const datesRange = req.body.days;
 
         readJson(DATABASE_JSON)
             .then((rulesJson) => {
-
+                const dates = generateDatesWithinRange(datesRange)
+                
                 const availableHours = getAvailableHours(dates, rulesJson)
 
                 return res.status(201).json({

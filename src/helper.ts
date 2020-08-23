@@ -3,15 +3,14 @@ import Rule from './models/Rule.model';
 import Interval from './models/Interval.model';
 import moment from 'moment';
 import AvailableDay from './models/AvailableDay.model';
-import path = require('path');
-const databaseDir = path.join(__dirname,'../src', 'database')
+import { DATABASE_DIR, DATABASE_JSON } from './paths.consts'
 
 
 const mapToJson = (map: Map<number, Rule>) => {
     return JSON.stringify([...map]);
 }
 
-const jsonToMap = (jsonStr): Map<number, Rule> => {
+const jsonToMap = (jsonStr: string): Map<number, Rule> => {
     try {
         return new Map(JSON.parse(jsonStr));
     } catch (e) {
@@ -24,51 +23,46 @@ export const getNewId = (rules: Map<number, Rule> ) => {
 }
 
 export const getAvailableHours = (dates: string[], rules: Map<number, Rule> ) => {
-    const datesFromInterval = generateDates(dates)
-    console.log(datesFromInterval);
-    
-    return datesFromInterval.map(date => {
+    return dates.map(date => {
         const day = +moment(date, 'DD-MM-YYYY').format('d')
         const intervals = getIntervalsByDay(day, rules)
-        const intervalSort = intervals.sort(compare)
+        const intervalSort = intervals.sort(sortIntervals)
         const availableDay: AvailableDay = {day: date, intervals: generateAvailableIntervals(intervalSort)}
         
         return availableDay;
     })
 }
 
-const generateDates = (dates: string[]) => {
-    let date = dates[0]
-    const datesFromInterval: string[] = []
-    while(date <= dates[1]) {
-        datesFromInterval.push(date); //push every added day to an array.
-        date = moment(date, "DD-MM-YYYY").add(1, 'days').format('DD-MM-YYYY'); //we use moment to add days.
-    }
+export const generateDatesWithinRange = (datesRange: string[]) => {
+    const daysQuantity = moment(datesRange[1], "DD-MM-YYYY").diff(moment(datesRange[0], "DD-MM-YYYY"), 'days');
 
-    return datesFromInterval
+    return [...Array(daysQuantity + 1).keys()]
+            .map(day => moment(datesRange[0], "DD-MM-YYYY")
+            .add(day, 'days')
+            .format('DD-MM-YYYY'));
 }   
 
 const generateAvailableIntervals = (intervals: Interval[]) => {
-    const edd = intervals[0] !== undefined ? intervals[0].start : "23:59"  //mudar esse nome de variavel
-    const firstInterval: Interval = {start: "00:00", end: edd}
+    const firstIntervalEnd = (intervals[0] !== undefined) ? intervals[0].start : "23:59"
+    const firstInterval: Interval = {start: "00:00", end: firstIntervalEnd}
     
-    const intervalss: Interval[] = [] //mudar esse nome de variavel 
-    intervalss.push(firstInterval)
+    const availableIntervals: Interval[] = []
+    availableIntervals.push(firstInterval)
 
     intervals.forEach((interval, index) => {
         const start = interval.end
         const end = intervals[index+1] !== undefined ? intervals[index+1].start : "23:59"
-        const newInterval: Interval = {start: start, end: end} 
-        intervalss.push(newInterval)
+        const availableInterval: Interval = {start: start, end: end} 
+        availableIntervals.push(availableInterval)
     })
 
-    return intervalss
+    return availableIntervals
 
 }
 
-export const mkDir = (dirPath: string) => {
-    if (!fs.existsSync(dirPath)) 
-        return fs.promises.mkdir(dirPath);
+export const createDatabaseDir = () => {
+    if (!fs.existsSync(DATABASE_DIR)) 
+        return fs.promises.mkdir(DATABASE_DIR);
     
     return Promise.resolve();
 };
@@ -131,9 +125,9 @@ const getIntervalsByDate = (date: string, rules: Map<number, Rule>) => {
     return intervals;
 }
 
-export const createRulesJson = () => {
-    if (!fs.existsSync(path.join(databaseDir,'rules.json'))) 
-        return fs.open(path.join(databaseDir,'rules.json'), 'w', (err, file) => {
+export const createDatabaseJson = () => {
+    if (!fs.existsSync(DATABASE_JSON)) 
+        return fs.open(DATABASE_JSON, 'w', (err, file) => {
             if (err) {
                 throw err;
             }
@@ -142,7 +136,7 @@ export const createRulesJson = () => {
     return Promise.resolve(); 
 }
 
-const compare = ( intervalA: Interval, intervalB: Interval ) =>  { //ordenar os intervalos dps.
+const sortIntervals = ( intervalA: Interval, intervalB: Interval ) =>  { //ordenar os intervalos dps.
     if ( intervalA.start < intervalB.start ){
       return -1;
     }
@@ -151,4 +145,3 @@ const compare = ( intervalA: Interval, intervalB: Interval ) =>  { //ordenar os 
     }
     return 0;
 }
-  
