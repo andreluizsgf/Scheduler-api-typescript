@@ -114,12 +114,48 @@
                     }
                 }
             }
+        },
+        "/rules/availableHours": {
+            "get": {
+                "tags": [
+                    "Rules"
+                ],
+                "summary": "Get all available hours within given dates interval",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "firstDay",
+                        "required": true,
+                        "description": "Delete Rule with id",
+                        "schema": {
+                            "$type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "lastDay",
+                        "required": true,
+                        "description": "Delete Rule with id",
+                        "schema": {
+                            "$type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Rules"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "id": {
             "properties": {
-                "uuid": {
+                "id": {
                     "type": "string"
                 }
             }
@@ -155,7 +191,21 @@
                 }
             }
         },
-        "Cats": {
+        "Date": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "end": {
+                    "type": "string"
+                }
+            }
+        },
+        "Rules": {
             "type": "object",
             "properties": {
                 "cats": {

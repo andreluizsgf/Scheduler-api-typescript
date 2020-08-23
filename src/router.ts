@@ -10,9 +10,8 @@ class Router {
         router.route('/rules')
             .get(cors(), index)
             .post(cors(), store)
-            router.get('/rules/hours', cors(), availableHours);
+            router.get('/rules/availableHours', cors(), availableHours);
             router.delete('/rules/:id', cors(), destroy);
-
         router.options('*', cors());
 
         server.use('/', router)

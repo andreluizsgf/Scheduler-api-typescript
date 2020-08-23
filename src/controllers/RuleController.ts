@@ -60,12 +60,13 @@ export const store = (req: express.Request, res: express.Response) => {
 
 export const availableHours = (req: express.Request, res: express.Response) => {
     try {
-        const datesRange = req.body.days;
-
+        const firstDate: any = req.query.firstDay;
+        const lastDate: any = req.query.lastDay;
+        
         readJson(DATABASE_JSON)
             .then((rulesJson) => {
-                const dates = generateDatesWithinRange(datesRange)
-                
+                const dates = generateDatesWithinRange(firstDate, lastDate)
+
                 const availableHours = getAvailableHours(dates, rulesJson)
 
                 return res.status(201).json({

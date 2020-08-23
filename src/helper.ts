@@ -33,11 +33,13 @@ export const getAvailableHours = (dates: string[], rules: Map<number, Rule> ) =>
     })
 }
 
-export const generateDatesWithinRange = (datesRange: string[]) => {
-    const daysQuantity = moment(datesRange[1], "DD-MM-YYYY").diff(moment(datesRange[0], "DD-MM-YYYY"), 'days');
-
+export const generateDatesWithinRange = (firstDate: string, lastDate: string) => {
+    console.log(firstDate, lastDate);
+    
+    const daysQuantity = moment(lastDate, "DD-MM-YYYY").diff(moment(firstDate, "DD-MM-YYYY"), 'days');
+    
     return [...Array(daysQuantity + 1).keys()]
-            .map(day => moment(datesRange[0], "DD-MM-YYYY")
+            .map(day => moment(firstDate, "DD-MM-YYYY")
             .add(day, 'days')
             .format('DD-MM-YYYY'));
 }   
