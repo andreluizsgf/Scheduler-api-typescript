@@ -1,5 +1,5 @@
 {
-  "name": "seans-typescript-nodejs-crud-rest-api-boilerplate",
+  "name": "scheduler-api-typescript",
   "version": "1.0.1",
   "description": "",
   "main": "server.js",
@@ -9,14 +9,7 @@
     "dev": "concurrently --kill-others \"tsc -w\" \"nodemon dist/server.js\"",
     "test": "jest"
   },
-  "keywords": [
-    "typescript",
-    "nodejs",
-    "crud",
-    "rest",
-    "swagger"
-  ],
-  "author": "Sean Bradley",
+  "author": "André Luiz Gomes",
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.6",
