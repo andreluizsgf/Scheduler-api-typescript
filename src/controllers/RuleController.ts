@@ -48,9 +48,10 @@ export const store = (req: express.Request, res: express.Response) => {
 
                 writeJson(rulesJson, DATABASE_JSON)
                     .then(() => {
-                        res.json({
-                            uuid: 0
-                        })
+                        return res.status(201).json({
+                            message: "Rules successfully created.",
+                            status: true,
+                        });
                     })
             })
     } catch (e) {
@@ -70,9 +71,9 @@ export const availableHours = (req: express.Request, res: express.Response) => {
                 const availableHours = getAvailableHours(dates, rulesJson)
 
                 return res.status(201).json({
-                    message: "Rule successfully created.",
+                    message: "All available hours.",
                     status: true,
-                    hous: availableHours
+                    hours: availableHours
                 });
             })
     } catch (err) {
@@ -89,12 +90,15 @@ export const destroy = (req: express.Request, res: express.Response) => {
 
     readJson(DATABASE_JSON)
         .then((rulesJson) => {
-            
+            const rule = rulesJson.get(id);
             if(rulesJson.delete(id)){
                 writeJson(rulesJson, DATABASE_JSON)
-                res.json({
-                    uuid: req.params.id
-                })
+
+                return res.status(201).json({
+                    message: "Rule successfully deleted.",
+                    status: true,
+                    rule: rule
+                });
             }
             else {
                 res.status(400).send(JSON.stringify("Regra não encontrada. Informe um ID válido"));

@@ -88,7 +88,7 @@ export const checkConflictsByDate = (newRule: Rule, rules: Map<number, Rule>) =>
     const intervals = getIntervalsByDate(newRule.date, rules);
     if(intervals.length)
         return intervals.every(interval => {
-            return (((newRule.interval.start <= interval.start && newRule.interval.end <= interval.start) || (newRule.interval.start >= interval.end && newRule.interval.end >= interval.end)) && newRule.interval.start != newRule.interval.end)
+            return (((newRule.interval.start <= interval.start && newRule.interval.end <= interval.start) || (newRule.interval.start >= interval.end && newRule.interval.end >= interval.end)))
         })
         
     else return true;
@@ -100,7 +100,7 @@ export const checkConflictsByDay = (newRule: Rule, rules: Map<number, Rule>) => 
 
     if(intervals.length)
         return intervals.every(interval => {
-            return ( ((newRule.interval.start <= interval.start && newRule.interval.end <= interval.start) || (newRule.interval.start >= interval.end && newRule.interval.end >= interval.end)) && newRule.interval.start != newRule.interval.end)
+            return ( ((newRule.interval.start <= interval.start && newRule.interval.end <= interval.start) || (newRule.interval.start >= interval.end && newRule.interval.end >= interval.end)))
         })
     else return true;
 }

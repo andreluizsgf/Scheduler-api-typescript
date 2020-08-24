@@ -1,12 +1,13 @@
 {
-  "name": "seans-typescript-nodejs-crud-rest-api-boilerplate",
+  "name": "scheduler-api-typescript",
   "version": "1.0.1",
   "description": "",
   "main": "server.js",
   "scripts": {
     "start": "tsc && node dist/server.js",
     "build": "tsc",
-    "dev": "concurrently --kill-others \"tsc -w\" \"nodemon dist/server.js\""
+    "dev": "concurrently --kill-others \"tsc -w\" \"nodemon dist/server.js\"",
+    "test": "jest"
   },
   "keywords": [
     "typescript",
@@ -19,19 +20,21 @@
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.6",
-    "@types/lodash": "^4.14.159",
+    "@types/supertest": "^2.0.10",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "lodash": "^4.17.20",
     "moment": "^2.27.0",
-    "swagger-ui-express": "^4.1.4",
-    "typescript": "3.3.3333",
-    "uuid": "^3.3.2"
+    "supertest": "^4.0.2",
+    "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.10",
     "@types/node": "^13.13.15",
     "concurrently": "^2.2.0",
-    "nodemon": "^2.0.4"
+    "jest": "^26.4.2",
+    "nodemon": "^2.0.4",
+    "ts-jest": "^26.2.0",
+    "typescript": "^4.0.0"
   }
 }

@@ -82,12 +82,12 @@
                     "name": "id",
                     "in": "path",
                     "required": true,
-                    "description": "ID of the cat that we want to match",
+                    "description": "Rule ID",
                     "type": "string"
                 }
             ],
             "delete": {
-                "summary": "Delete cat with given ID",
+                "summary": "Delete rule with given ID",
                 "tags": [
                     "Rules"
                 ],
@@ -126,7 +126,7 @@
                         "in": "query",
                         "name": "firstDay",
                         "required": true,
-                        "description": "Delete Rule with id",
+                        "description": "first day from range - example: 20-08-2020",
                         "schema": {
                             "$type": "string"
                         }
@@ -135,7 +135,7 @@
                         "in": "query",
                         "name": "lastDay",
                         "required": true,
-                        "description": "Delete Rule with id",
+                        "description": "first day from range - example: 23-08-2020",
                         "schema": {
                             "$type": "string"
                         }
