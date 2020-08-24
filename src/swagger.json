@@ -1,7 +1,6 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "version": "1.0.0",
         "title": "Scheduler-api-typescript",
         "description": "This API was developed to Cubos backend internship tecnical challenge. You will be able to manage the schedules of a clinic",
         "license": {
@@ -34,6 +33,9 @@
                         "schema": {
                             "$ref": "#/definitions/Rules"
                         }
+                    },
+                    "400": {
+                        "description": "Something went wrong with the request;"
                     }
                 }
             },
@@ -65,7 +67,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "There were conflicts with some of the given rules."
+                    },
+                    "201": {
+                        "description": "Rules successfully created.",
                         "schema": {
                             "$ref": "#/definitions/id"
                         }
@@ -110,7 +115,10 @@
                         }
                     },
                     "400": {
-                        "description": "Failed. Rule not found."
+                        "description": "Problems deleting rule."
+                    },
+                    "500": {
+                        "description": "Rule not found. Enter a valid ID."
                     }
                 }
             }
@@ -147,6 +155,12 @@
                         "schema": {
                             "$ref": "#/definitions/Rules"
                         }
+                    },
+                    "400": {
+                        "description": "Problems listing available hours."
+                    },
+                    "500": {
+                        "description": "Missing query parameters."
                     }
                 }
             }

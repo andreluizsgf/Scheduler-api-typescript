@@ -45,6 +45,7 @@ npm start
 ## Swagger
 
 Visit `http://localhost:3333/swagger` to view the OPENAPI document in Swagger-UI
+![Example Get all rules](docs/swagger.PNG)
 
 ### Usage
 
@@ -97,10 +98,12 @@ Weekly:
 ```
 There is validation to ensure time conflict with already created rules.
 For example, using the examples above, if we try to create a daily rule, every monday and saturday, starting "09:30 and ending "10:50", the only one created will be saturday, as we have a conflict between the already created rules and our new intervals in monday.
-  
+
+If there is any time conflicts, the rules will be listed in response.
+
 Possible status are:
 ```
-200 - There were conflicts with some given rules; 
+200 - There were conflicts with some of the given rules; 
 201 - All rules were successfully created;
 400 - Something went wrong with the request;
 ```
@@ -126,7 +129,7 @@ Possible status are:
 ```
 200 - OK - Lists all availables hours;
 400 - Something went wrong with the request;
-500 - Missing query parameters ;
+500 - Missing query parameters;
 ```
 ## Tests
 

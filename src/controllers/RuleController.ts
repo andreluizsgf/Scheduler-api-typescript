@@ -69,8 +69,12 @@ export const store = (req: express.Request, res: express.Response) => {
                         }
                     })
             })
-    } catch (e) {
-        res.status(400).send(JSON.stringify({ "error": e }));
+    } catch (error) {
+        return res.status(400).json({
+            message: "Problems creating rules.",
+            status: false,
+            error: error.message
+        });
     }
 }
 
@@ -99,11 +103,11 @@ export const availableHours = (req: express.Request, res: express.Response) => {
                     hours: availableHours
                 });
             })
-    } catch (err) {
+    } catch (error) {
         return res.status(400).json({
             message: "Problems listing available hours.",
             status: false,
-            error: err.message
+            error: error.message
         });
     }
 }
@@ -125,13 +129,16 @@ export const destroy = (req: express.Request, res: express.Response) => {
                     });
                 }
                 else {
-                    res.status(500).send(JSON.stringify("Rule not found. Enter a valid ID."));
+                    return res.status(500).json({
+                        message: "Rule not found. Enter a valid ID.",
+                        status: false,
+                    });
                 }
-            } catch (err) {
+            } catch (error) {
                 return res.status(400).json({
                     message: "Problems deleting rule.",
                     status: false,
-                    error: err.message
+                    error: error.message
                 });
             }
         })
