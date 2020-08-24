@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsc && node dist/server.js",
     "build": "tsc",
-    "dev": "concurrently --kill-others \"tsc -w\" \"nodemon dist/server.js\"",
+    "dev": "concurrently --kill-others \"tsc -w\" \"nodemon src/server.ts\"",
     "test": "jest"
   },
   "author": "André Luiz Gomes",

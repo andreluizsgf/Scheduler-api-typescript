@@ -26,7 +26,6 @@ class App {
         () => {
           resolve(port)
         })
-        .on('error', (err: object) => reject(err));
     })
   }
 }
