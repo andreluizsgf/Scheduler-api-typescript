@@ -1,4 +1,4 @@
-import Interval from './Interval.model'
+import Interval from './Interval.model';
 
 export default interface AvailableDay {
     day: string;
