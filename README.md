@@ -51,13 +51,13 @@ Visit `http://localhost:3333/swagger` to view the OPENAPI document in Swagger-UI
 
 I assume you're using Postman to test this API. If not, just go to https://www.getpostman.com/downloads/ and start using. :)
 
-## Routes & Endpoints
-|Method  | Route | Endpoint  
-|--|--|--|
-| GET |/post  | index
-| POST |/post  | create
-| DELETE |/post  | delete
-| GET |/post  | availableHours
+## Endpoints
+|Method  | Endpoint |
+|--|--|
+| GET |http://localhost:3333/rules
+| POST |http://localhost:3333/rules
+| DELETE |http://localhost:3333/rules/{:id}
+| GET |http://localhost:3333/rules/availableHours
 
 ### index
 ![Example Get all rules](docs/get-example.PNG)
@@ -121,7 +121,7 @@ Possible status are:
 ```
 
 ### available
-![Example Get all rules](available-hours-post-example.PNG)
+![Example Get all rules](docs/available-hours-example.PNG)
 This method receives the two dates with format "DD-MM-YYYY" and returns all available intervals between these dates considering all created rules.
 Both dates should be passed as query parameters with keys "firstDay" and "lastDay". 
 
