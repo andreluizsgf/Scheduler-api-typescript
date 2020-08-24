@@ -4,8 +4,7 @@ import Interval from '../../models/Interval.model'
 import { writeJson, readJson, checkConflictsByDate, checkConflictsByDay, getNewId, getAvailableHours, generateDatesWithinRange } from '../../helper'
 import moment from 'moment'
 
-
-export const index = (rulesDatabase) => {
+export const index = (rulesDatabase: Map<number, Rule> ) => {
     try {        
         return Array.from(rulesDatabase.values())
             
@@ -14,7 +13,7 @@ export const index = (rulesDatabase) => {
     }
 }
 
-export const store = (rule, rulesDatabase) => {
+export const store = (rule, rulesDatabase: Map<number, Rule>) => {
     try {
         const date: string = rule.date
         const intervals: Interval[] = rule.intervals
@@ -25,7 +24,7 @@ export const store = (rule, rulesDatabase) => {
                 const id = getNewId(rulesDatabase)
                 const rule: Rule = { date: date, day: day, interval: interval }
                 if(interval.end > interval.start && checkConflictsByDate(rule, rulesDatabase) && checkConflictsByDay(rule, rulesDatabase))
-                rulesDatabase.set(id, rule)
+                    rulesDatabase.set(id, rule)
             });
         } else {
             const days: number[] = rule.days || [0, 1, 2, 3, 4, 5, 6]
@@ -34,7 +33,7 @@ export const store = (rule, rulesDatabase) => {
                     const id = getNewId(rulesDatabase)
                     const rule: Rule = { date: date, day: day, interval: interval}
                     if(interval.end > interval.start && checkConflictsByDay(rule, rulesDatabase))
-                    rulesDatabase.set(id, rule)
+                        rulesDatabase.set(id, rule)
                 });
             });
         }
@@ -45,48 +44,35 @@ export const store = (rule, rulesDatabase) => {
         return e;
     }
 }
-/*
-export const availableHours = (req: express.Request, res: express.Response) => {
+
+
+export const availableHours = (rulesDatabase: Map<number, Rule>, firstDay: string, lastDay: string) => {
     try {
-        const firstDate: any = req.query.firstDay;
-        const lastDate: any = req.query.lastDay;
         
-        readJson(DATABASE_JSON)
-            .then((rulesJson) => {
-                const dates = generateDatesWithinRange(firstDate, lastDate)
+        const firstDate: any = firstDay;
+        const lastDate: any = lastDay;
+                if(!firstDate || !lastDate) {
+                    return 'Please inform valid firstDate and lastDate values.'
+                }
+        
+        const dates = generateDatesWithinRange(firstDate, lastDate)
 
-                const availableHours = getAvailableHours(dates, rulesJson)
-
-                return res.status(201).json({
-                    message: "Rule successfully created.",
-                    status: true,
-                    hous: availableHours
-                });
-            })
+        const availableHours = getAvailableHours(dates, rulesDatabase)
+        
+        return availableHours;
+            
     } catch (err) {
-        return res.status(500).json({
-            message: "Problems creating the new rule.",
-            status: false,
-            error: err.message
-        });
+        return err;
     }
 }
 
-export const destroy = (req: express.Request, res: express.Response) => {
-    const id = +req.params.id
+export const destroy = (rulesDatabase: Map<number, Rule>, id: number) => {
 
-    readJson(DATABASE_JSON)
-        .then((rulesJson) => {
-            
-            if(rulesJson.delete(id)){
-                writeJson(rulesJson, DATABASE_JSON)
-                res.json({
-                    uuid: req.params.id
-                })
-            }
-            else {
-                res.status(400).send(JSON.stringify("Regra não encontrada. Informe um ID válido"));
-            }
-        })
+    if(rulesDatabase.delete(id)){
+        return('Rule successfully deleted.')
+    }
+    else {
+        return ("Rule not found. Enter a valid ID.");
+    }
+    
 }
-*/

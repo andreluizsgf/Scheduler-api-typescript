@@ -34,7 +34,6 @@ export const getAvailableHours = (dates: string[], rules: Map<number, Rule> ) =>
 }
 
 export const generateDatesWithinRange = (firstDate: string, lastDate: string) => {
-    console.log(firstDate, lastDate);
     
     const daysQuantity = moment(lastDate, "DD-MM-YYYY").diff(moment(firstDate, "DD-MM-YYYY"), 'days');
     

@@ -56,29 +56,14 @@ I assume you're using Postman to test this API. If not, just go to https://www.g
 | GET |/post  | index
 | POST |/post  | create
 | DELETE |/post  | delete
-| GET |/post  | available
+| GET |/post  | availableHours
 
 ### index
+![Example Get all rules](docs/get-example.PNG)
 This endpoint lists all created rules
 
 ### create
-This method receives an JSON object and writes it in a JSON file named rules.json. The default structure to a rule is
-```
-{
-    "date": "",
-    "days": [],
-    "intervals": [{}],
-}
-```
-The validation to guarantee the correct structure of a rule is made with jsonschema. You can see the schema below.
-```
-{
-	"date": {"type":  "string"},
-	"days": {"type":  "array"},
-	"intervals": {"type":  "array"}
-}
-```
-This endpoint allows you to choose any date with format DD-MM-YYYY, any week day, as numbers, and interval objects. 
+This endpoint allows you to choose any date with format DD-MM-YYYY, any week day, as number, and interval objects, wich of this elements following the structures below. 
 ```
 {
 	"date": "DD-MM-YYYY",
@@ -87,7 +72,7 @@ This endpoint allows you to choose any date with format DD-MM-YYYY, any week day
 }
 ```
 There is three possible uses of this structure: 
-
+![Example Get all rules](docs/single-occurrency-post-example.PNG)
 One specific day:
 ```
 {
@@ -95,12 +80,14 @@ One specific day:
     "intervals": [{"start": "10:00", "end": "15:00"}],
 }
 ```
+![Example Get all rules](docs/daily-post-example.PNG)
 Daily:
 ```
 {
     "intervals": [{"start": "11:00", "end": "15:00"}],
 }
 ```
+![Example Get all rules](docs/weekly-post-example.PNG)
 Weekly:
 ```
 {
@@ -113,37 +100,40 @@ For example, using the examples above, if we try to create a daily rule, every m
   
 Possible status are:
 ```
-400 - All intervals are already created; 
-201 - The rule was successfully created;
-500 - there is some error with JSON structure;
+200 - There were conflicts with some given rules; 
+201 - All rules were successfully created;
+400 - Something went wrong with the request;
 ```
  
 ### delete
+![Example Get all rules](docs/delete-example.PNG)
 This method receives the id of a created Rule, get the rule in JSON file named rules.json and delete it.
 The id is passed through the URL. For example: localhost:3333/rules/9
 
 Possible status are:
 ```
-404 - There is no rule with this id;
 200 - The rule was successfully delete;
-500 - There is any other kind of error;
+400 - Something went wrong with the request;
+500 - There is no rule with this id;
 ```
 
 ### available
+![Example Get all rules](available-hours-post-example.PNG)
 This method receives the two dates with format "DD-MM-YYYY" and returns all available intervals between these dates considering all created rules.
-Both dates should be passed as parameters with keys "firstDay" and "lastDay". 
+Both dates should be passed as query parameters with keys "firstDay" and "lastDay". 
 
 Possible status are:
 ```
-201 - Lists all availables hours;
-500 - There is any other kind of error;
+200 - OK - Lists all availables hours;
+400 - Something went wrong with the request;
+500 - Missing query parameters ;
 ```
 ## Tests
 
-There is a few tests to ensure all endpoints responses and proper functioning of the functions. All tests can be found in tests/routes.test.js
+There is a few tests to ensure all the proper functioning of the functions. All tests can be found in `/src/tests/controller.spec.ts`
 
 ### Support files
-To test the application were created an fake database and a fake controller to simulate the real Controller.
+To test the application were created a fake controller to simulate the real Controller.
 
 ## Collection
 There is a collection in postman to test index, create, delete and available endpoints. Feel free to test it. <br>
