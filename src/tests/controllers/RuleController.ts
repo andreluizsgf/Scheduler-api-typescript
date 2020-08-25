@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import Rule from '../../models/Rule.model';
 import Interval from '../../models/Interval.model';
-import {checkConflictsByDate, checkConflictsByDay, getNewId, getAvailableHours, generateDatesWithinRange} from '../../helper';
+import {checkConflictsByDate, checkConflictsByDay, getNewId, getAvailableHours, generateDatesWithinRange} from '../../helpers/SchedulerHelper';
 import moment from 'moment';
 
 export const index = (rulesDatabase: Map<number, Rule> ) => {

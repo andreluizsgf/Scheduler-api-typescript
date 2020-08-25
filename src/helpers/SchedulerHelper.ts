@@ -1,23 +1,8 @@
 /* eslint-disable max-len */
-import fs from 'fs';
-import Rule from './models/Rule.model';
-import Interval from './models/Interval.model';
+import Rule from '../models/Rule.model';
+import Interval from '../models/Interval.model';
 import moment from 'moment';
-import AvailableDay from './models/AvailableDay.model';
-import {DATABASE_DIR, DATABASE_JSON} from './paths.consts';
-
-
-const mapToJson = (map: Map<number, Rule>) => {
-  return JSON.stringify([...map]);
-};
-
-const jsonToMap = (jsonStr: string): Map<number, Rule> => {
-  try {
-    return new Map(JSON.parse(jsonStr));
-  } catch (e) {
-    return new Map();
-  }
-};
+import AvailableDay from '../models/AvailableDay.model';
 
 export const getNewId = (rules: Map<number, Rule> ) => {
   return rules.size + 1;
@@ -60,28 +45,6 @@ const generateAvailableIntervals = (intervals: Interval[]) => {
   return availableIntervals;
 };
 
-export const createDatabaseDir = () => {
-  if (!fs.existsSync(DATABASE_DIR)) {
-    return fs.promises.mkdir(DATABASE_DIR);
-  }
-
-  return Promise.resolve();
-};
-
-export const writeJson = (data: any, filepath: any) => {
-  const serializedData = mapToJson(data);
-  return fs.promises.writeFile(filepath, serializedData);
-};
-
-export const readJson = (filepath: string): Promise<Map<number, Rule>> => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filepath, (err, data) => {
-      if (err) reject(err);
-      const jsonData = jsonToMap(data.toString());
-      resolve(jsonData);
-    });
-  });
-};
 
 export const checkConflictsByDate = (newRule: Rule, rules: Map<number, Rule>) => {
   const intervals = getIntervalsByDate(newRule.date, rules);
@@ -126,17 +89,6 @@ const getIntervalsByDate = (date: string, rules: Map<number, Rule>) => {
   return intervals;
 };
 
-export const createDatabaseJson = () => {
-  if (!fs.existsSync(DATABASE_JSON)) {
-    return fs.open(DATABASE_JSON, 'w', (err) => {
-      if (err) {
-        throw err;
-      }
-    });
-  }
-
-  return Promise.resolve();
-};
 
 const sortIntervals = ( intervalA: Interval, intervalB: Interval ) => { // ordenar os intervalos dps.
   if ( intervalA.start < intervalB.start ) {

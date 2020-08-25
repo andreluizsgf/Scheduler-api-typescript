@@ -2,13 +2,14 @@
 import * as express from 'express';
 import Rule from '../models/Rule.model';
 import Interval from '../models/Interval.model';
-import * as helper from '../helper';
+import * as scheduler from '../helpers/SchedulerHelper';
+import * as file from '../helpers/FileHelper';
 import moment from 'moment';
 import {DATABASE_JSON} from '../paths.consts';
 
 export const index = (req: express.Request, res: express.Response) => {
   try {
-    helper.readJson(DATABASE_JSON)
+    file.readJson(DATABASE_JSON)
         .then((rulesJson) => {
           const rules = Array.from(rulesJson.values());
           return res.status(200).json({
@@ -24,7 +25,7 @@ export const index = (req: express.Request, res: express.Response) => {
 
 export const store = (req: express.Request, res: express.Response) => {
   try {
-    helper.readJson(DATABASE_JSON)
+    file.readJson(DATABASE_JSON)
         .then((rulesJson) => {
           const date: string = req.body.date;
           const intervals: Interval[] = req.body.intervals;
@@ -33,9 +34,9 @@ export const store = (req: express.Request, res: express.Response) => {
           if (date) {
             const day = +moment(date, 'DD-MM-YYYY').format('d');
             intervals.forEach((interval) => {
-              const id = helper.getNewId(rulesJson);
+              const id = scheduler.getNewId(rulesJson);
               const rule: Rule = {date: date, day: day, interval: interval};
-              if (helper.checkConflictsByDate(rule, rulesJson) && helper.checkConflictsByDay(rule, rulesJson)) {
+              if (scheduler.checkConflictsByDate(rule, rulesJson) && scheduler.checkConflictsByDay(rule, rulesJson)) {
                 rulesJson.set(id, rule);
               } else {
                 errors.push(rule);
@@ -45,9 +46,9 @@ export const store = (req: express.Request, res: express.Response) => {
             const days: number[] = req.body.days || [0, 1, 2, 3, 4, 5, 6];
             days.forEach((day) => {
               intervals.forEach((interval) => {
-                const id = helper.getNewId(rulesJson);
+                const id = scheduler.getNewId(rulesJson);
                 const rule: Rule = {day: day, interval: interval};
-                if (helper.checkConflictsByDay(rule, rulesJson)) {
+                if (scheduler.checkConflictsByDay(rule, rulesJson)) {
                   rulesJson.set(id, rule);
                 } else {
                   errors.push(rule);
@@ -56,7 +57,7 @@ export const store = (req: express.Request, res: express.Response) => {
             });
           }
 
-          helper.writeJson(rulesJson, DATABASE_JSON)
+          file.writeJson(rulesJson, DATABASE_JSON)
               .then(() => {
                 if (!errors.length) {
                   return res.status(201).json({
@@ -94,11 +95,11 @@ export const availableHours = (req: express.Request, res: express.Response) => {
       });
     }
 
-    helper.readJson(DATABASE_JSON)
+    file.readJson(DATABASE_JSON)
         .then((rulesJson) => {
-          const dates = helper.generateDatesWithinRange(firstDate, lastDate);
+          const dates = scheduler.generateDatesWithinRange(firstDate, lastDate);
 
-          const availableHours = helper.getAvailableHours(dates, rulesJson);
+          const availableHours = scheduler.getAvailableHours(dates, rulesJson);
 
           return res.status(200).json({
             message: 'All available hours.',
@@ -118,12 +119,12 @@ export const availableHours = (req: express.Request, res: express.Response) => {
 export const destroy = (req: express.Request, res: express.Response) => {
   const id = +req.params.id;
 
-  helper.readJson(DATABASE_JSON)
+  file.readJson(DATABASE_JSON)
       .then((rulesJson) => {
         try {
           const rule = rulesJson.get(id);
           if (rulesJson.delete(id)) {
-            helper.writeJson(rulesJson, DATABASE_JSON);
+            file.writeJson(rulesJson, DATABASE_JSON);
 
             return res.status(200).json({
               message: 'Rule successfully deleted.',
